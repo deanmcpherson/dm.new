@@ -1,0 +1,162 @@
+<template>
+  <div class="p-6">
+    <div class="w-[600px] max-w-full mx-auto">
+      <h1 class="mb-2 font-extrabold text-xl">
+        Get a unique dm.new link.
+      </h1>
+      <h2 class="mb-4">
+        A quick way for people to slide in your X dm's. 📩
+      </h2>
+      <p class="mb-4">
+        Examples:
+        <UButton
+          to="https://dm.new/tim"
+          variant="link"
+          :padded="false"
+        >
+          dm.new/tim
+        </UButton>
+        •
+        <UButton
+          to="https://dm.new/steven"
+          variant="link"
+          :padded="false"
+        >
+          dm.new/steven
+        </UButton>
+      </p>
+      <UCard>
+        <UForm
+          :schema="UrlFormSchema"
+          :state="state"
+          class="space-y-4"
+          @submit="onSubmit"
+        >
+          <!-- url -->
+          <UFormGroup
+            label="Enter the URL you want eg. tim"
+            name="url"
+          >
+            <UInput
+              v-model="state.url"
+              placeholder="tim"
+              :ui="{
+                leading: {
+                  padding: {
+                    sm: 'ps-[4.75rem]'
+                  }
+                }
+              }"
+            >
+              <template #leading>
+                <span>dm.new/</span>
+              </template>
+            </UInput>
+          </UFormGroup>
+
+          <!-- username -->
+          <UFormGroup
+            label="Your X username (where to send DM's)"
+            name="username"
+          >
+            <UInput
+              v-model="state.username"
+              placeholder="timb03"
+              :ui="{
+                leading: {
+                  padding: {
+                    sm: 'ps-[3.85rem]'
+                  }
+                }
+              }"
+            >
+              <template #leading>
+                <span>x.com/</span>
+              </template>
+            </UInput>
+          </UFormGroup>
+
+          <UAlert
+            v-if="error"
+            color="red"
+            variant="subtle"
+            title="Error"
+            :description="error"
+          />
+
+          <UAlert
+            v-if="successUrl"
+            color="green"
+            variant="subtle"
+            :title="`We've created your domain: ${successUrl}`"
+            :actions="[
+              { label: 'Open URL', variant: 'solid', color: 'white', to: successUrl, target: '_blank' },
+              { label: copied ? 'Copied!' : 'Copy URL', variant: 'solid', color: 'white', click: () => copy() }
+            ]"
+          />
+
+          <!-- submit button -->
+          <UButton
+            block
+            color="primary"
+            type="submit"
+            :loading="loading"
+          >
+            Create
+          </UButton>
+        </UForm>
+      </UCard>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { object, string, type InferType } from 'yup';
+import { useClipboard } from '@vueuse/core';
+import type { FormSubmitEvent } from '#ui/types';
+
+const UrlFormSchema = object({
+  username: string()
+    .required(),
+  url: string()
+    .min(2)
+    .matches(/^[a-zA-Z0-9-]+$/, 'URL can only contain letters, numbers, or dashes')
+    .required()
+});
+
+export type UrlForm = InferType<typeof UrlFormSchema>;
+
+const successUrl = ref<string>();
+const loading = ref(false);
+const error = ref<string>();
+
+const state = ref<UrlForm>({
+  username: '',
+  url: ''
+});
+
+const { copy, copied } = useClipboard({ source: successUrl.value });
+
+async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
+  loading.value = true;
+  successUrl.value = undefined;
+  error.value = undefined;
+
+  try {
+    await $fetch('/api/create', {
+      method: 'POST',
+      body: {
+        url: event.data.url,
+        username: event.data.username
+      }
+    });
+
+    successUrl.value = `https://dm.new/${event.data.url}`;
+  } catch (err: any) {
+    error.value = err.message;
+  }
+
+  loading.value = false;
+}
+
+</script>
