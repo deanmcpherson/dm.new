@@ -107,7 +107,7 @@
       </UCard>
       <p class="text-sm text-center text-gray-500 mt-4">
         <!-- eslint-disable-next-line -->
-        Made by <a href="https://x.com/timb03" class="underline">@timb03</a>, <a href="https://github.com/timb-103/dm.new">open source</a> and powered by <a href="https://dub.co" class="underline">dub.co</a>.
+        Made by <a href="https://x.com/timb03" class="underline">timb03</a>, <a href="https://github.com/timb-103/dm.new" class="underline">open source</a> and powered by <a href="https://dub.co" class="underline">dub</a>.
       </p>
     </div>
   </div>
