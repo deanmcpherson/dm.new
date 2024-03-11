@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
         projectSlug: 'pallyy'
       },
       json: {
-        domain: 'dm.new',
         url: `https://twitter.com/direct_messages/create/${body.username}`,
         key: body.url,
         publicStats: true
