@@ -92,7 +92,7 @@
             :title="`We've created your domain: ${successUrl}`"
             :actions="[
               { label: 'Open URL', variant: 'solid', color: 'white', to: successUrl, target: '_blank' },
-              { label: copied ? 'Copied!' : 'Copy URL', variant: 'solid', color: 'white', click: () => copy() }
+              { label: 'Copy URL', variant: 'solid', color: 'white', click: () => copyUrl() }
             ]"
           />
 
@@ -112,6 +112,8 @@
               Made by <a href="https://x.com/timb03" target="_blank" class="underline">timb03</a>, <a href="https://github.com/timb-103/dm.new" target="_blank" class="underline">open source</a> and powered by <a href="https://dub.co" target="_blank" class="underline">dub</a>.
       </p>
     </div>
+
+    <UNotifications />
   </div>
 </template>
 
@@ -145,13 +147,18 @@ export type UrlForm = InferType<typeof UrlFormSchema>;
 const successUrl = ref<string>();
 const loading = ref(false);
 const error = ref<string>();
+const toast = useToast();
 
 const state = ref<UrlForm>({
   username: '',
   url: ''
 });
 
-const { copy, copied } = useClipboard({ source: successUrl.value });
+async function copyUrl(): Promise<void> {
+  const { copy } = useClipboard({ source: successUrl.value });
+  await copy();
+  toast.add({ title: 'Copied!' });
+}
 
 async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
   loading.value = true;
