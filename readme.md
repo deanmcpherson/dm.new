@@ -1,4 +1,4 @@
-# (dm.new)[https://dm.new]
+# [dm.new](https://dm.new)
 
 A quick way for people to slide in your X dm's. 100% free. 📩 
 
