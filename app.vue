@@ -5,7 +5,7 @@
         Get a unique dm.new link.
       </h1>
       <h2 class="mb-4">
-        A quick way for people to slide in your X dm's. 📩
+        A quick way for people to slide in your X dm's. 100% free. 📩
       </h2>
       <p class="mb-4">
         Examples:
@@ -107,7 +107,7 @@
       </UCard>
       <p class="text-sm text-center text-gray-500 mt-4">
         <!-- eslint-disable-next-line -->
-        Made by <a href="https://x.com/timb03" class="underline">@timb03</a>, powered by <a href="https://dub.co" class="underline">dub.co</a>.
+        Made by <a href="https://x.com/timb03" class="underline">@timb03</a>, <a href="https://github.com/timb-103/dm.new">open source</a> and powered by <a href="https://dub.co" class="underline">dub.co</a>.
       </p>
     </div>
   </div>
@@ -117,6 +117,17 @@
 import { object, string, type InferType } from 'yup';
 import { useClipboard } from '@vueuse/core';
 import type { FormSubmitEvent } from '#ui/types';
+
+useSeoMeta({
+  title: 'dm.new',
+  description: 'A quick way for people to slide in your X dm\'s. 100% free 📩'
+});
+
+useHead({
+  link: [
+    { rel: 'icon', href: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📩</text></svg>' }
+  ]
+});
 
 const UrlFormSchema = object({
   username: string()
@@ -144,6 +155,8 @@ async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
   loading.value = true;
   successUrl.value = undefined;
   error.value = undefined;
+
+  useTrackEvent('create-link');
 
   try {
     await $fetch('/api/create', {
