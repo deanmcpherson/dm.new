@@ -133,7 +133,7 @@ const UrlFormSchema = object({
   username: string()
     .required(),
   url: string()
-    .min(2)
+    .min(3, 'Min 3 characters. Send Tim a dm to claim a shorter')
     .matches(/^[a-zA-Z0-9-]+$/, 'URL can only contain letters, numbers, or dashes')
     .required()
 });
