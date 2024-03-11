@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
       json: {
         domain: 'dm.new',
         url: `https://twitter.com/direct_messages/create/${body.username}`,
-        key: body.url
+        key: body.url,
+        publicStats: true
       },
       headers: {
         Authorization: `Bearer ${useRuntimeConfig().dubApiKey}`
