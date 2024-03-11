@@ -80,7 +80,6 @@
             v-if="error"
             color="red"
             variant="subtle"
-            title="Error"
             :description="error"
           />
 
@@ -106,6 +105,10 @@
           </UButton>
         </UForm>
       </UCard>
+      <p class="text-sm text-center text-gray-500 mt-4">
+        <!-- eslint-disable-next-line -->
+        Made by <a href="https://x.com/timb03" class="underline">@timb03</a>, powered by <a href="https://dub.co" class="underline">dub.co</a>.
+      </p>
     </div>
   </div>
 </template>
@@ -153,7 +156,7 @@ async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
 
     successUrl.value = `https://dm.new/${event.data.url}`;
   } catch (err: any) {
-    error.value = err.message;
+    error.value = err.response?._data?.message ?? err.message;
   }
 
   loading.value = false;
