@@ -89,12 +89,42 @@
             v-if="successUrl"
             color="green"
             variant="subtle"
-            :title="`We've created your domain: ${successUrl}`"
-            :actions="[
-              { label: 'Open URL', variant: 'solid', color: 'white', to: successUrl, target: '_blank' },
-              { label: 'Copy URL', variant: 'solid', color: 'white', click: () => copyUrl() }
-            ]"
-          />
+          >
+            <template #description>
+              <p class="mb-2 font-semibold">
+                {{ `We've created your domain: ${successUrl}` }}
+              </p>
+              <div class="flex gap-2">
+                <UButton
+                  size="xs"
+                  variant="solid"
+                  color="white"
+                  class="mr-auto"
+                  @click="copyUrl()"
+                >
+                  Copy URL
+                </UButton>
+                <UButton
+                  size="xs"
+                  variant="solid"
+                  color="white"
+                  :to="successUrl"
+                  target="_blank"
+                >
+                  Open URL
+                </UButton>
+                <UButton
+                  size="xs"
+                  variant="solid"
+                  color="white"
+                  :to="statsUrl"
+                  target="_blank"
+                >
+                  View Stats
+                </UButton>
+              </div>
+            </template>
+          </UAlert>
 
           <!-- submit button -->
           <UButton
@@ -145,6 +175,7 @@ const UrlFormSchema = object({
 export type UrlForm = InferType<typeof UrlFormSchema>;
 
 const successUrl = ref<string>();
+const statsUrl = ref<string>();
 const loading = ref(false);
 const error = ref<string>();
 const toast = useToast();
@@ -163,6 +194,7 @@ async function copyUrl(): Promise<void> {
 async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
   loading.value = true;
   successUrl.value = undefined;
+  statsUrl.value = undefined;
   error.value = undefined;
 
   useTrackEvent('create-link');
@@ -177,6 +209,7 @@ async function onSubmit(event: FormSubmitEvent<UrlForm>): Promise<void> {
     });
 
     successUrl.value = `https://dm.new/${event.data.url}`;
+    statsUrl.value = `https://dm.new/stats/${event.data.url}`;
   } catch (err: any) {
     error.value = err.response?._data?.message ?? err.message;
   }
