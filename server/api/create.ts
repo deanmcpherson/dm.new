@@ -4,6 +4,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   try {
+    if(!body.username||(body.username&&body.username.length<3)){
+        throw new Error('Min 3 characters...');
+    }
     await got.post({
       url: 'https://api.dub.co/links',
       searchParams: {
