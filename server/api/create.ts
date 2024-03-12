@@ -1,7 +1,14 @@
 import got, { HTTPError } from 'got';
+import { object, string } from 'yup';
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  const body = await readValidatedBody(
+    event,
+    async (body) => await object({
+      url: string().required('Url is required').min(3, 'Url must be at least 3 characters. Send Tim a dm to claim a shorter'),
+      username: string().required('Your X Username is required')
+    }).validate(body)
+  );
 
   try {
     await got.post({
@@ -21,7 +28,7 @@ export default defineEventHandler(async (event) => {
   } catch (err) {
     if (err instanceof HTTPError) {
       if (err.response.statusCode === 409) {
-        throw new Error('Already taken, try another.');
+        throw createError({ statusCode: 409, message: 'Username already taken, try another.' });
       }
     }
   }
