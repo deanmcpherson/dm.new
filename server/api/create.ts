@@ -1,5 +1,4 @@
 import got, { HTTPError } from 'got';
-import dub from 'dub';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
