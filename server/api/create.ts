@@ -1,4 +1,5 @@
 import got, { HTTPError } from 'got';
+import dub from 'dub';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
     await got.post({
       url: 'https://api.dub.co/links',
       searchParams: {
-        projectSlug: 'pallyy'
+        projectSlug: 'dm-new'
       },
       json: {
         url: `https://twitter.com/direct_messages/create/${body.username}`,
